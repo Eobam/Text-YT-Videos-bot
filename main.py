@@ -3,6 +3,7 @@ import yt_dlp
 from moviepy import VideoFileClip
 import subprocess
 import os
+from yt_dlp import YoutubeDL
 
 #Gets the video, I think...
 def download_youtube_video(url):
