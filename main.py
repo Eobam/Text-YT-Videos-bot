@@ -7,9 +7,10 @@ import os
 #Gets the video, I think...
 def download_youtube_video(url):
     ydl_opts = {
-        'outtmpl': 'video.mp4',
+        'outtmpl': 'video.%(ext)s',
         'format': 'bestvideo+bestaudio/best'
-        #line 9, probs gonna be removed, seems useless, tutorial says otherwise tho
+        'noplaylist': True
+        #line 11, probs gonna be removed, seems useless, tutorial says otherwise tho
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
