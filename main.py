@@ -30,16 +30,22 @@ def convert_to_mov(input_file):
     return "video.mov"
 
 #Sends the text
-def send_imessage(phone_number, file_path):
+def send_imessage(phone_number, file_path, attachment_path=None):
     script = f'''
     tell application "Messages"
         set targetService to 1st service whose service type = iMessage
         set targetBuddy to buddy "{phone_number}" of targetService
-        send POSIX file "{os.path.abspath(file_path)}" to targetBuddy
+        send "{message}" to targetBuddy
     end tell
     '''
     subprocess.run(["osascript", "-e", script])
     #copied the above code block from StackOverflow ts is gonna break...
+
+    if attachment_path:
+        applescript += f'\n        send POSIX file "{attachment_path}" to targetBuddy'
+    applescript += '\nend tell'
+
+    subprocess.run(["osascript", "-e", applescript])
 
 if __name__ == "__main__":
     url = input("Video Link Please: ")
@@ -47,3 +53,17 @@ if __name__ == "__main__":
     mov_file = convert_to_mov(video_file)
 
     print("If dis worked, you'll see this oh and btw this should be the name of the video file", mov_file)
+
+
+def get_video_info(url):
+    ydl_opts = {"quiet": True, "skip_download": True}
+    with YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+        return {
+            "title": info.get("title"),
+            "uploader": info.get("uploader"),
+            "uploader_url": info.get("uploader_url"),
+            "description": info.get("description"),
+            "duration": info.get("duration"),
+
+        }
