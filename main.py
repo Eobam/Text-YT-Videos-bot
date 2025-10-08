@@ -8,12 +8,14 @@ import os
 def download_youtube_video(url):
     ydl_opts = {
         'outtmpl': 'video.%(ext)s',
-        'format': 'bestvideo+bestaudio/best'
+        'format': 'bestvideo+bestaudio/best',
         'noplaylist': True
         #line 11, probs gonna be removed, seems useless, tutorial says otherwise tho
     }
+
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([url])
+        info_dict = ydl.extract_info(url, download=True)
+        filename = ydl.prepare_filename(info_dict)
         
     return 'video.mp4'
 
