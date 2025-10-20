@@ -11,11 +11,11 @@ import tempfile
 #Gets the video, I think...
 def download_youtube_video(url):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_path = os.path.abspath(f"video_{timestamp}.mp4")
+    output_path = os.path.abspath(f"video_{timestamp}.mov")
     ydl_opts = {
         'outtmpl': output_path,
         'format': 'bestvideo+bestaudio/best',
-        'merge_output_format': 'mp4',
+        'merge_output_format': '.mov',
         'sleep_interval': 5,
         'max_sleep_interval': 15,
     }
@@ -27,7 +27,7 @@ def download_youtube_video(url):
 
 #Converts to textable format (TBD whether it'll be .mov or .mp4)
 def convert_to_mov(input_file):
-    compressed_path = input_file.replace(".mp4", "_2M.mp4")
+    compressed_path = input_file.replace(".mov", "_2M.mov")
     clip = VideoFileClip(input_file)
     mov_path = input_file.replace(".mp4", ".mov")
     clip.write_videofile(
@@ -45,10 +45,9 @@ def convert_to_mov(input_file):
 
 #Sends the text
 def send_imessage(phone_number, video_path):
-    icloud_email = input("uhh could you drop ur icloud ID email?")
     script = f'''
     tell application "Messages"
-        set targetService to service "{icloud_email}"
+        set targetService to 1st service whose service type = iMessage
         set targetBuddy to buddy "{phone_number}" of targetService
         send POSIX file "{video_path}" to targetBuddy
     end tell
@@ -71,9 +70,9 @@ if __name__ == "__main__":
         print("broski, gimme your frickin digits")
         phone_number = input("come on now, hand em over")
 
-    mp4_path = download_youtube_video(url)
+    mov_path = download_youtube_video(url)
     
-    compressed_path = convert_to_mov(mp4_path)
+    compressed_path = convert_to_mov(mov_path)
     send_imessage(phone_number, compressed_path)
 
 
