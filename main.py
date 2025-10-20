@@ -7,19 +7,18 @@ from yt_dlp import YoutubeDL
 from datetime import datetime
 import tempfile
 import tempfile
-
+from moviepy import *
 #Gets the video, I think...
 def download_youtube_video(url):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_path = os.path.abspath(f"video_{timestamp}.mov")
+    output_path = os.path.abspath(f"video_{timestamp}.mp4")
     ydl_opts = {
         'outtmpl': output_path,
         'format': 'bestvideo+bestaudio/best',
-        'merge_output_format': '.mov',
+        'merge_output_format': '.mp4',
         'sleep_interval': 5,
         'max_sleep_interval': 15,
     }
-
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
         return output_path
@@ -27,20 +26,19 @@ def download_youtube_video(url):
 
 #Converts to textable format (TBD whether it'll be .mov or .mp4)
 def convert_to_mov(input_file):
-    compressed_path = input_file.replace(".mov", "_2M.mov")
+    compressed_path = input_file.replace(".mov", ".mp4")
     clip = VideoFileClip(input_file)
-    mov_path = input_file.replace(".mp4", ".mov")
+    mov_path = input_file.replace(".mov", ".mp4")
     clip.write_videofile(
-        compressed_path,
-        codec="libx264",
-        audio_codec="aac",
-        bitrate="1M",
-        preset="medium",
-        threads=4,
-        logger=None,
-    )
-    clip.close()
-    return compressed_path
+            compressed_path,
+            codec="libx264",
+            audio_codec="aac",
+            bitrate="1M",
+            preset="medium",
+            threads=4,
+            logger=None
+        )
+    return mov_path
     #ermmmm, I think this breaks it, note to self: If code doesn't work, debug this
 
 #Sends the text
@@ -91,3 +89,15 @@ def get_video_info(url):
             "duration": info.get("duration"),
 
         }
+def print_info():
+    ydl_opts = {"quiet": True, "skip_download": True}
+    with YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(url, download=False)
+        return {
+            "title": info.get("title"),
+            "uploader": info.get("uploader"),
+            "uploader_url": info.get("uploader_url"),
+            "description": info.get("description"),
+            "duration": info.get("duration"),
+        }
+    
