@@ -15,7 +15,7 @@ def download_youtube_video(url):
     ydl_opts = {
         'outtmpl': output_path,
         'format': 'bestvideo+bestaudio/best',
-        'merge_output_format': '.mp4',
+        'merge_output_format': 'mp4',
         'sleep_interval': 5,
         'max_sleep_interval': 15,
     }
@@ -26,18 +26,17 @@ def download_youtube_video(url):
 
 #Converts to textable format (TBD whether it'll be .mov or .mp4)
 def convert_to_mov(input_file):
-    compressed_path = input_file.replace(".mov", ".mp4")
+    mov_path = input_file.replace(".mp4", ".mov")
     clip = VideoFileClip(input_file)
-    mov_path = input_file.replace(".mov", ".mp4")
     clip.write_videofile(
-            compressed_path,
-            codec="libx264",
-            audio_codec="aac",
-            bitrate="1M",
-            preset="medium",
-            threads=4,
-            logger=None
-        )
+        mov_path,
+        codec="libx264",
+        audio_codec="aac",
+        bitrate="1M",
+        preset="medium",
+        threads=4,
+        logger=None
+    )
     return mov_path
     #ermmmm, I think this breaks it, note to self: If code doesn't work, debug this
 
@@ -59,7 +58,7 @@ def send_imessage(phone_number, video_path):
     finally:
         os.remove(temp_path)
 
-#uhhh, this is supposed to fix the zsh error according to a random man with an insane accent so obvi gonna work.
+#uhhh, this is supposed to fix the zsh error
 
 if __name__ == "__main__":
     url = input("Video Link Please: ")
@@ -100,4 +99,3 @@ def print_info():
             "description": info.get("description"),
             "duration": info.get("duration"),
         }
-    
